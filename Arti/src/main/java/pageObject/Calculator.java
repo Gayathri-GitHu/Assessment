@@ -1,6 +1,7 @@
 package pageObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -19,7 +20,7 @@ public class Calculator {
 		PageFactory.initElements(driver, this);
 	}
 
-	@FindBy(xpath = "//div[@class='borrow__error__text'])")
+	@FindBy(xpath = "//div[@aria-live='assertive' and @class=\"borrow__error__text\"]")
 	public WebElement borrow_error;
 	@FindBy(xpath = "//input[@id='application_type_single']")
 	public WebElement application_type_single;
@@ -128,11 +129,18 @@ public class Calculator {
 		return estimateDefault.getText();
 	}
 	@FindBy(xpath = "//div[@class=\"borrow__error__text\"]//ancestor::div[@style=\"display: none;\"]")
+	public List<WebElement> noeligibilityError;
+	@FindBy(xpath = "//div[@class=\"borrow__error__text\"]")
 	public WebElement eligibilityError;
+	@FindBy(xpath = "//span[@class='borrow__result__text']")
+	public WebElement eligibility;
+	
+	
+
 	
 	
 	
-	@FindBy(xpath = "//button[@class=\"start-over\"]")
+	@FindBy(xpath = "//button[@aria-label=\"Start over\"]")
 	public WebElement start_over;
 
 	@FindBy(xpath = "//button[@id=\"btnBorrowCalculater\"]")
@@ -213,4 +221,5 @@ public class Calculator {
 	public void clickOnHowMuchCouldBeBorrowed() {
 		work_out_how_much_could_be_borrowed.click();
 	}
+	
 }

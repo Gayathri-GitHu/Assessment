@@ -3,9 +3,11 @@ package stepDefinitions;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.testng.Assert;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 
 import base.BaseClass;
 import io.cucumber.java.en.When;
@@ -14,12 +16,11 @@ import io.cucumber.java.en.Then;
 import pageObject.Calculator;
 
 public class Calculator_Test extends BaseClass {
-
 	WebDriver driver;
 	static Calculator c;
 
 	public Calculator_Test() throws IOException {
-
+ driver=BaseClass.driver;
 		BaseClass.initialization();
 		c = new Calculator(BaseClass.driver);
 	}
@@ -32,7 +33,8 @@ public class Calculator_Test extends BaseClass {
 	}
 
 	@Then("Enter data into the fields and validate the eligibility")
-	public void enter_data_into_the_fieldsandvalidatetheeligibility(io.cucumber.datatable.DataTable dataTable) {
+	public void enter_data_into_the_fieldsandvalidatetheeligibility(io.cucumber.datatable.DataTable dataTable)
+			throws InterruptedException {
 		List<Map<String, String>> detailmap = dataTable.asMaps(String.class, String.class);
 		for (Map<String, String> e : detailmap) {
 			if (e.get("applicationType").equals("Single")) {
@@ -59,16 +61,17 @@ public class Calculator_Test extends BaseClass {
 			c.scroll_down();
 			c.clickOnHowMuchCouldBeBorrowed();
 			c.scroll_down();
-			/*
-			 * if(!c.eligibilityError.isDisplayed()) {Assert.assertEquals(c.getEstimate(),
-			 * "$" + e.get("eligibility"), "Value is not Matching"); }
-			 * 
-			 * else {
-			 */
-			Assert.assertEquals(c.getBorrow_error().getText().contains(
-					"Based on the details you've entered, we're unable to give you an estimate of your borrowing power with this calculator. For questions, call us on "),
-					true, "Error message is not as expected");
+			Thread.sleep(10000);
+			if (c.eligibility.isDisplayed()) {
+				Assert.assertEquals(c.getEstimate(), "$" + e.get("eligibility"), "Value is not Matching");
+				c.clickOnStartOver();
+			} else {
+				Assert.assertEquals(c.getBorrow_error().getText().contains(
+						"Based on the details you've entered, we're unable to give you an estimate of your borrowing power with this calculator. For questions, call us on "),
+						true, "Error message is not as expected");
+			}
 
+			Thread.sleep(10000);
 		}
 	}
 
